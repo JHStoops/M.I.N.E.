@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>M.I.N.E. Documentation</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+	<div id="wrapper">
+		<h1>4/12/2016 - Core Game Documentation</h1>
+		<p>This documentation will follow the same format as the checkpoint from 3/23/2016.<br />
+		All core game functionality has been implemented. I also went through each function to<br />
+		ensure that they were in the right file (Model vs. View.) And I made sure that proper<br />
+		"interface" functions were made for the View to get info from the Model and vice versa.</p>
+		<p>I'll send in the project as the core game, but will continue working on it after the<br />
+		course for fun, and to add it to my portfolio.</p>
+
+		<h2>Main Game Logic Components</h2>
+		<ul>
+			<h4>Implemented</h4>
+			<li><strong>Generate Grid</strong> - Randomly assign bombs, and assign correct numbers to adjacent tiles.<br />
+			To test, play a few games to see how random they are..</li>
+			<li><strong>Generate Map</strong> - Display the player's unexplored view of the map. Available in <em>Classic</em> and <em>Grassy</em>.<br />
+			To test, just choose your difficulty and tile type, then press "Start New Game!"</li>
+			<li><strong>Destroy Map</strong> - Deletes all information about previous map. Ensures good memory management, and prevents bugs.</li>
+			<li><strong>Event Handlers</strong> - Listens for player mouse clicks, and adds functionality to vital buttons (e.g. start new game!)<br />
+			To test, left-click on any in-game tile to reveal it, or right-click on a tile to flag it, also notice that the context menu doesn't appear on the map.</li>
+			<li><strong>Flag Tiles</strong> - Involves the player right-clicking on any given tile to flag it.</li>			
+			<li><strong>Explore Tile</strong> - Involves player left-clicking an unexplored tile to reveal it's contents.</li>
+			<li><strong>Explore Empty Tile</strong> - recursively opens all adjacent tiles until the empty tiles are surrounded by numbers.<br />
+			To test, simply start a new game. The first tile you reveal will be an "empty" tile which will trigger this game logic.</li>
+			<li><strong>Interface functions</strong> - Added to View for communicating with the Model. More might be added as needed.</li>
+			<li><strong>Disable Map Clicks</strong> - Once the player wins/loses, the map needs to disable any event listeners until a new game has started.<br />
+			To test, simply win/lose a game and try left or right clicking on the tiles.</li>
+			<li><strong>First Click is Empty</strong> - A player's first click should always be on an empty tile.<br />
+			To test, simply start a new game as many times as you want.</li>
+			<li><strong>Detect Success</strong> - Congratulate player's victory (add money to wallet, increase win count, etc.)<br />
+			To test, look at the side panel under Game Stats. The status will change to "Win!"</li>
+			<li><strong>Detect Failure</strong> - Lament player's near death experience (Remove money from wallet, increase loss count, etc.)<br />
+			To test, look at the side panel under Game Stats. The status will change to "Coma for X day(s)."</li>
+			<li><strong>Remaining Mines</strong> - In the side panel, under Game Stats, you can see thenumber of total mines and mines left.</li>
+			<li><strong>Create Custom Map</strong> - Before starting a game, the player can select height and width 9-40 tiles,<br />
+			and between 9-400 mines. The equation for max mines is ((height * width) / 2).<br />
+			To test, try creating a map that has more than half the tiles as mines: an error message will pop up.</li>
+		</ul>
+		
+		<h2>Optional Game Logic Components</h2>
+		<ul>
+			<h4>Implemented</h4>
+			<li><strong>Animated explosion</strong> - When you step on a mine, let it do what it does best: Explode!<br />
+			To test, accidentally of purposefully click on a mine to witness the explosion up close!</li>
+			<li><strong>Mass Explosion</strong> - When you step on a mine, it will trigger all other unflagged mines to explode.<br />
+			To test, accidentally of purposefully click on a mine to witness the array of explosions up close!</li>
+			<li><strong>Customized Map</strong> - Let the player set the width, height, and mines themselves.<br />
+			To test, chose 'Custom' from the drop-down menu to bring up the input fields. Then play a custom game!</li>
+			<li><strong>Player Wallet</strong> - Capitalism rules! Money looks like success, it smells like success, and it tastes like success.</li>
+			<li><strong>Player Statistics</strong> - Keep track of wins and losses, timed records for each map, total money earned/spent, etc.</li>
+			<li><strong>Focus Music</strong> - To get the extra credit, I added some music with an audio tag.<br />
+			To test, simply left-click the play/pause button once. Press again to pause.</li>
+			<li><strong>Use Local Storage</strong> - Will take the player's username from Index.html to start a game.<br />
+			If the player closes out and returns to Sweeper.html, it'll continue where they left off.<br />
+			If the local storage is wiped out and they return to Sweeper.html, it'll start from scratch with the name "Mysterio."</li>
+			<li><strong>Load Game</strong> - Lets player load a game from a local JSON file. (currently hardcoded file.)<br />
+			To test, click "Load Game" to see the loaded game pop up. (Doesn't work in Chrome!)</li>
+		</ul>
+		<ul>
+			<h4>Not Implemented</h4>
+			<li><strong>M.I.N.E. Shop</strong> - Capitalism rules! Buy your way to success with better equipment. (disposible items.)</li>
+			<li><strong>Timer</strong> - The bomb defusing training taught you patience, but your inner child wants to see how quickly you can do it!</li>
+			<li><strong>Save Game</strong> - Let user save game in JSON format locally on their computer.</li>
+		</ul>
+	</div>
+</html>

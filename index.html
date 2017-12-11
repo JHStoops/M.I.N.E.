@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>M.I.N.E.</title>
+		<link rel="stylesheet" href="styles.css">
+		<script src="js/Login.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<h1>M.I.N.E.</h1>
+			<section id="game_desc">
+				<article id="Intro">
+					<h2>An introduction to the game</h2>
+					<p>
+						You are a professional mine defuser sent to a post-war field.<br/>
+						The M.I.N.E. (Mine-removal Initiative of Nations Everywhere) has provided you<br/>
+						only with a device that counts the amount of mines immediately around you.
+					</p>
+					<p>
+						Are you ready to make your money's worth?<br />
+						Username: <input type="text" id="login_username" /> <br />
+						<button id="login_button">Bombs away!</button>
+						<span id="login_message"></span>
+					</p>
+					
+				</article>
+				<hr />
+				<h2>Checkpoints in the Programming</h2>
+				<p>See the process of the building-up of this virtual, mind-controlling bomb defusing... I mean this great <strong>game!</strong></p>
+				<a href="checkpoint.html">2/24/2016 - Checkpoint</a> <br />
+				<a href="documentation.html">4/12/2016 - Core Game documentation</a>
+				<hr />
+				<article id="Rules">
+					<h2>The rules of the game</h2>
+					<p>
+						To win: You must safely flag all mines on the map.<br />
+						To lose: Step on a mine before flagging it.<br />
+						<a href="http://www.minesweeper.info/wiki/Strategy" target="_blank">Here are some strategies to help you stay alive on the mine field!</a>
+					</p>
+					
+					<p>You can take on maps of different difficulties:</p>
+					<ul>
+						<li>Beginner: 10 mines on a 9x9 map.</li>
+						<li>Intermediate: 40 mines on a 16x16 map.</li>
+						<li>Expert: 99 mines on a 16x30 map.</li>
+					</ul>
+					
+					<p>The types of tiles are</p>
+					<ul>
+						<li><img src="img/Unexplored.png" alt="Unexplored" /> - These have yet to be dealt with.</li>
+						<li><img src="img/Empty.png" alt="Empty" /> - These are explored but so far away from mines that they're no threat.</li>
+						<li><img src="img/2mines.png" alt="2 nearby mines" /> - This means there are two adjacent tiles that have mines. Number varies from 1-8.</li>
+						<li><img src="img/Flagged.png" alt="Flagged" /> - Marked as a mine. Doesn't activate when clicked on.</li>
+						<li><img src="img/Maybe.png" alt="Maybe a mine" /> - Might be a mine. Activates when clicked on.</li>
+						<li><img src="img/Mine.png" alt="Mine" /> - If you see this, you've either won or lost.</li>
+					</ul>
+				</article>
+				<hr />
+				<article id="Preliminary">
+					<hgroup>
+						<h2>Preliminary Software Design</h2>
+						<h3>Model</h3>
+						<h4>Variables</h4>
+					</hgroup>
+					<p><strong>theGame</strong> - The game's Model object containing all the information about the gridmap.<br />
+					<code>{gridRows: new Array(), width: 0, height: 0, mines: 0, wins: 0}</code></p>
+					<p><strong>gridRows</strong> - A 2D array that stores the <em>Tile</em> values beneath the user's "Unexplored" tiles.
+						By separating the player's map and this grid, it reduces the chance of cheating. Each element contains a string with the class name of the tile, e.g. "empty" or "mine". For example:</p>
+						<p style="text-indent: 50px;"><strong>gridRows[4] =</strong> {"empty", "mines1", "mines2", "mine", "mines4", "mine", ...}</p>
+						<p style="text-indent: 50px;"><strong>gridRows[5] =</strong> {"empty", "empty", "mines3", "mine", "mines5", "mines2", ...}</p>
+						<p style="text-indent: 50px;"><strong>gridRows[6] =</strong> {"mines3", "mines2", "mines2", "mine", "mine", "mine1", ...}</p>
+					<p><strong>width/height</strong> - I could get these values from gridRows's length attributes directly, but using these variables will keep my code simpler and more understadable.</p>
+					<p><strong>mines</strong> - Number of total mines in the player's map. Will be used to show remaining unflagged mines.</p>
+					<p><strong>wins</strong> - A counter for how many mine fields the player has successfully completed.</p>
+					<br />
+					
+					<h4>Functions</h4>
+					<p><strong>getTileValue(row, col)</strong> - An interface function for View to get the selected tile's class name. </p>
+					<p><strong>destroyMap()</strong> - An interface function for View to delete the previous map if it exists.</p>
+					<p><strong>generateGrid(height, width, difficulty)</strong> - An interface function for View to create a new mine field.</p>
+					<p><strong>gameOver(bool)</strong> - An interface function for View to tell the Model that the player won (bool == true) or lost (bool == false) the game.</p>
+					<p><strong>assignMines()</strong> - Places mines in random locations, but never in the same location.</p>
+					<p><strong>numberMines()</strong> - Traverses through theGame, figuring out which numbers to put in each tile based on adjacent mines. Skip tile if it's a mine.</p>
+					<br />
+					
+					<hgroup>
+						<h3>View</h3>
+						<h4>Variables</h4>
+					</hgroup>
+					<p><strong>Difficulty</strong> - Choose difficulty in the form of a radiogroup, "Beginner" being the default.</p>
+					<br />
+					
+					<h4>Functions</h4>
+					<p><strong>init()</strong> - Sets event handlers to left/right mouse clicks: disables the right-click context menu, and to appropriately interacts with tiles as they're clicked. Initialized by 'window.onload = init;'</p>
+					<p><strong>startNewGame()</strong> - Uses Model interface functions <em>destroyMap()</em> and <em>generateGrid(height, width, difficulty)</em> to create a new grid, then it runs <em>generateMap()</em> to display the player's map. Activates when player has chosen settings and clicks "Start New Game!"</p>
+					<p><strong>generateMap()</strong> - Each table data element gets a unique ID to make changing the tiles' backgrounds easier by just changing the class. ex: id="r3c6" (row 3, column 6)</p>
+					<p><strong>reveal()</strong> - Tied to an event handler for left-clicks on "unexplored" tiles to reveal its contents. Will call <em>revealEmpty(row, col)</em> if content is "empty", or <em>gameOver(false)</em> if it's a "mine".</p>
+					<p><strong>revealEmpty(row, col)</strong> - Reveal all empty tiles and the surrounding numbers when the player clicks on an empty tile.</p>
+					<p><strong>markTile()</strong> - Any Unexplored tile can be set to "Maybe," "Flagged," and back to "Unexplored" by right-clicking on them.</p>
+					<br />
+					
+					<h4>Optional (if time permits)</h4>
+					<ul>
+						<li>Implement a payment system: Completing a mine field pays per tile times the difficulty, then use money in the store for beneficial items.</li>
+						<li>Let the player customize width and height of mine field, as well as the amount of mines.</li>
+						<li>Implement a timer. Clearing a mine field in a short amount of time could give a bonus payout.</li>
+						<li>Make sure the player's first click isn't a mine. Lose money when you step on a mine for hospital bills!</li>
+						<li>Make sure the player's first click is an Empty tile for a good start. Must make empty tile and surrounding 8 tiles off limits for mines.</li>
+						<li>Make a High Score system - stored locally on player's computer with cookies/session?</li>
+						<li>Make an animated pixel explosion using CSS3 (just make a .png and make it spin while growing in size.)</li>
+					</ul>
+					
+				</article>
+			</section>
+		</div>
+	</body>
+</html>

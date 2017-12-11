@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>M.I.N.E. Sweeper</title>
+		<link rel="stylesheet" href="styles.css">
+		<script src="js/View.js"></script>
+		<script src="js/Model.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<aside id="gameMenu">
+				<h4>Player Stats</h4>
+				Player: <span id="playerName"></span> <br />
+				Wallet: $<span id="playerWallet"></span> <br />
+				Wins: <span id="playerWins"></span> <br />
+				Losses: <span id="playerLosses"></span> <br />
+				Flagged mines: <span id="playerFlaggedMines"></span> <br />
+				
+				<br />
+				<h4>Game Stats</h4>
+				Mines Total: <span id="minesTotal"></span> <br />
+				Mines Left: <span id="minesLeft"></span> <br />
+				Status: <span id="gameState"></span>
+				
+				<br /><br />
+				<h4>Game Menu</h4>
+				Difficulty:<select id="difficultyChoice">
+					<option value="Beginner" id="Beginner" selected="selected">Beginner</option>
+					<option value="Intermediate" id="Intermediate">Intermediate</option>
+					<option value="Expert" id="Expert">Expert</option>
+					<option value="Custom" id="Custom">Custom</option>
+				</select>
+				<div id="custMenu" style="display: none;">
+					Height: <input id="custHeight" type="number" min = "9" max = "40"><span id="custHeightError"></span><br />
+					Width: <input id="custWidth" type="number" min = "9" max = "40"><span id="custWidthError"></span><br />
+					Mines: <input id="custMines" type="number" min = "9" max = "400"><span id="custMinesError"></span><br />
+				</div>
+				<br />
+				Map Style:<br />
+					<label for="Classic"><input id="Classic" type="radio" name="mineField" value="Classic" checked="checked">Classic</label><br />
+					<label for="Grassy"><input id="Grassy" type="radio" name="mineField" value="Grassy">Grassy</label><br />
+
+				<button id="bNewGame">Start New Game!</button> <br />
+				<button id="bSaveGame">Save Game</button> <br />
+				<button id="bLoadGame">Load Game</button> <br /><br />
+				
+				Focus Music:
+				<img id="bMusicPlayer" height="63px" width="63px" src="img/pause-play-button.png" onclick="if($('musicPlayer').paused){$('musicPlayer').play()} else {$('musicPlayer').pause()}">
+				<audio id="musicPlayer" src="motivational_music.mp3" type="audio/mpeg">
+				
+				
+			</aside>
+			<section id="game">
+				
+			</section>
+		</div>
+	</body>
+</html>
