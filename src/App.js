@@ -61,7 +61,7 @@ function mineFieldReducer(state, action) {
 		default:
 			return {
 				// GameField
-				mapStyle: 'Classic',
+				mapStyle: '',
 				status: 'Idle',
 				height: 9,
 				width: 9,
@@ -82,7 +82,7 @@ export const GameContext = createContext();
 
 export default function App() {
 	const [state, dispatch] = useReducer(mineFieldReducer, {
-		mapStyle: 'Classic',
+		mapStyle: '',
 		status: 'Idle',
 		height: 9,
 		width: 9,

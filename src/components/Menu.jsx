@@ -61,7 +61,7 @@ export default function Menu() {
 			<button id="bLoadGame">Load Game</button> <br /><br />
 
 			Focus Music:
-			<img id="bMusicPlayer" height="63px" width="63px" src="img/pause-play-button.png" onClick={() => { $('musicPlayer').paused ? $('musicPlayer').play() : $('musicPlayer').pause()}} alt="Play concentration music" />
+			<img id="bMusicPlayer" height="63px" width="63px" src="../img/pause-play-button.png" onClick={() => { $('musicPlayer').paused ? $('musicPlayer').play() : $('musicPlayer').pause()}} alt="Play concentration music" />
 			<audio id="musicPlayer" src="motivational_music.mp3" type="audio/mpeg" />
 		</aside>
 	)
