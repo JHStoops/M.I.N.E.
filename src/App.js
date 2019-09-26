@@ -43,7 +43,7 @@ function mineFieldReducer(state, action) {
 		case 'mapStyle:Classic':
 			return Object.assign({}, state, {mapStyle: ''})
 		case 'mapStyle:Grassy':
-			return Object.assign({}, state, {mapStyle: 'gr-'})
+			return Object.assign({}, state, {mapStyle: 'gr_'})
 		case 'game:Status':
 			return Object.assign({}, state, action.status)
 		case 'game:minesLeft':

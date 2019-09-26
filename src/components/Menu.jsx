@@ -20,20 +20,15 @@ const styles = {
 
 export default function Menu() {
   const { dispatch, state } = useContext(GameContext)
-	const { flaggedMines, height, losses, mapStyle, mines, minesLeft, minesTotal, money, status, width, wins } = state
+	const { flaggedMines, losses, mapStyle, minesLeft, minesTotal, money, status, wins } = state
 	const [difficulty, setDifficulty] = useState('Beginner')
 	const [customField, setCustomField] = useState({height: 9, mines: 10, width: 9})
-	const [_mapStyle, setMapStyle] = useState('Classic')
 
 	function startNewGame() {
 		const action = { type: `newGame:${difficulty}` }
 		if (difficulty === 'Custom') {
 			Object.assign(action, customField)
 		}
-		dispatch(action)
-
-		// Set mapStyle
-		action.type = `mapStyle:${mapStyle}`
 		dispatch(action)
 	}
 
@@ -70,8 +65,8 @@ export default function Menu() {
 			</div>
 			<br />
 			Map Style:<br />
-			<input id="Classic" type="radio" name="mineField" value="Classic" onChange={event => setMapStyle(event.target.value)} checked={_mapStyle === 'Classic'} /><label htmlFor="Classic">Classic</label><br />
-			<input id="Grassy" type="radio" name="mineField" value="Grassy" onChange={event => setMapStyle(event.target.value)} checked={_mapStyle === 'Grassy'} /><label htmlFor="Grassy">Grassy</label><br />
+			<input id="Classic" type="radio" name="mineField" value="Classic" onChange={event => dispatch({ type: `mapStyle:Classic`})} /><label htmlFor="Classic">Classic</label><br />
+			<input id="Grassy" type="radio" name="mineField" value="Grassy" onChange={event => dispatch({ type: `mapStyle:Grassy`})} /><label htmlFor="Grassy">Grassy</label><br />
 
 			<button id="bNewGame" onClick={startNewGame}>Start New Game!</button> <br />
 			<button id="bSaveGame">Save Game</button> <br />
