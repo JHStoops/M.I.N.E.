@@ -1,8 +1,16 @@
 import React, { useContext, useState } from 'react'
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core'
 import { GameContext } from '../App'
 import { Tile } from './'
 
 let gridRows= []
+const styles = {
+	gameGrid: css`
+		border: 1px solid black;
+		border-collapse: collapse;
+	`
+}
 
 /**
  * @description - Sets up constiables and maps for a new game.
@@ -23,32 +31,6 @@ export default function GameField() {
 			return document.getElementById(theID);
 	}
 
-	/**
-	 * @description - returns an array with all elements of the specified class
-	 */
-	function $$(theClass){
-		if(typeof theClass === 'string')
-			return document.getElementsByClassName(theClass);
-	}
-
-	/**
-	 * @description - Updates the game state between 'Playing', 'Win!', and 'Coma for X day(s)')
-	 */
-	function updateGameState(newState){
-		$('gameState').innerText = newState;
-	}
-
-	/** View Functions */
-
-	function toggleCustMenuDisplay() {
-		//Used to extend the game menu when player creates custom map.
-
-		if( $('Custom').selected )
-			$('custMenu').style.display = 'inline';
-		else
-			$('custMenu').style.display = 'none';
-	}
-
 	function isFlagged(row, col){
 		//Checks if the specified tile on the player map is flagged.
 
@@ -57,115 +39,6 @@ export default function GameField() {
 		else
 			return false;
 	}
-
-	function reveal(){
-		//Reveals the tile's true contents by transferring the value from the Grid to the user's map.
-
-		//If first click, generate the grid.
-		if (firstClick){
-			generateGrid(this.parentNode.rowIndex, this.cellIndex);
-		}
-
-		//Looks up the id of the selected tile, manipulates the id to get the row and col indices.
-		if (this.className === 'unexplored' || this.className === 'maybe' ||
-			this.className === 'gr-unexplored' || this.className === 'gr-maybe'){
-
-			const col = this.cellIndex;
-			const row = this.parentNode.rowIndex;
-
-			//Retrieve the classname from the Model.
-			this.className = getTileValue(row, col);
-
-			if (this.className === 'empty' || this.className === 'gr-empty'){
-				revealEmpty(row, col);
-			}
-
-			//These two if statements start an animation for the mine to explode.
-			if (this.className === 'mine'){
-				this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-				setTimeout(function() {
-					if(!firstClick && $('r'+row+'c'+col).className === 'mine') $('r'+row+'c'+col).className = 'crater';
-				}, 1000);
-
-				for (let i = 0; i < height; i++) {
-					for (let j = 0; j < width; j++) {
-						if(getTileValue(i, j) === 'mine' && $('r'+i+'c'+j).className !== 'flagged'){
-							$('r'+i+'c'+j).className = 'mine';
-							$('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-
-							//I tried using setTimer here, but it only affected the last mine on the map.
-							//Creating this function runs this code on all mines!
-							boom(i, j);
-						}
-					}//End of for(j...
-				}//End of for (i...
-
-				gameOver(false);
-			}
-
-			if (this.className === 'gr-mine'){
-				this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-				setTimeout(function() {
-					if(!firstClick && $('r'+row+'c'+col).className === 'gr-mine') $('r'+row+'c'+col).className = 'gr-crater';
-				}, 1000);
-
-				for (let i = 0; i < height; i++) {
-					for (let j = 0; j < width; j++) {
-						if(getTileValue(i, j) === 'gr-mine' && $('r'+i+'c'+j).className !== 'gr-flagged') {
-							$('r'+i+'c'+j).className = 'gr-mine';
-							$('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-
-							boom(i, j);
-						}
-					}//End of for(j...
-				}//End of for (i...
-
-				gameOver(false);
-			}
-		}
-	}
-
-	function boom(row, col){
-		//Detonates all unflagged mines when player reveals a mine.
-
-		if($('r'+row+'c'+col).className === 'mine')
-			setTimeout(function() {
-				if(!firstClick && $('r'+row+'c'+col).className === 'mine') $('r'+row+'c'+col).className = 'crater';
-			}, 1000);
-		else
-			setTimeout(function() {
-				if(!firstClick && $('r'+row+'c'+col).className === 'gr-mine') $('r'+row+'c'+col).className = 'gr-crater';
-			}, 1000);
-	}
-
-	function revealEmpty(row, col){
-		//When player clicks on an empty tile, this function will reveal the rest
-		//of the group of empty tiles and their adjacent tiles (always numbers - never mines)
-		let tile;
-
-		for (let i = row - 1; i <= row + 1; i++){
-			if (i < 0 || i >= height) continue;
-
-			for (let j = col - 1; j <= col + 1; j++){
-				//Don't check the tile itself, only its adjacet tiles.
-				if (i === row && j === col) continue;
-				if (j < 0 || j >= width) continue;
-				tile = $('r'+i+'c'+j);
-
-				//Only deal with tile if it's still unexplored.
-				if (tile.className === 'unexplored' || tile.className === 'gr-unexplored'
-					|| tile.className === 'maybe'  || tile.className === 'gr-maybe'
-					|| tile.className === 'flagged'  || tile.className === 'gr-flagged'){
-					tile.className = getTileValue(i, j);
-
-					//If the tile happens to be another empty tile, it's time to go recursive!
-					if (tile.className === 'empty' || tile.className === 'gr-empty'){
-						revealEmpty(i, j);
-					}
-				}//End if(tile.className...
-			}//End for (const j...
-		}//End for (const i...
-	}//End function revealEmpty
 
 	function getTileValue(row, col){
 		//Returns the class name for the selected tile.
@@ -192,29 +65,43 @@ export default function GameField() {
 		return counter;
 	}
 
+// TODO: Maybe MineField should pass a callback to recursively open empty tile areas?
+function revealEmpty(row, col){
+  //When player clicks on an empty tile, this function will reveal the rest
+  //of the group of empty tiles and their adjacent tiles (always numbers - never mines)
+  let tile;
+
+  for (let i = row - 1; i <= row + 1; i++){
+    if (i < 0 || i >= height) continue;
+
+    for (let j = col - 1; j <= col + 1; j++){
+      //Don't check the tile itself, only its adjacet tiles.
+      if (i === row && j === col) continue;
+      if (j < 0 || j >= width) continue;
+      tile = $('r'+i+'c'+j);
+
+      //Only deal with tile if it's still unexplored.
+      if (tile.className === 'unexplored' || tile.className === 'gr-unexplored'
+        || tile.className === 'maybe'  || tile.className === 'gr-maybe'
+        || tile.className === 'flagged'  || tile.className === 'gr-flagged'){
+        tile.className = getTileValue(i, j);
+
+        //If the tile happens to be another empty tile, it's time to go recursive!
+        if (tile.className === 'empty' || tile.className === 'gr-empty'){
+          revealEmpty(i, j);
+        }
+      }//End if(tile.className...
+    }//End for (const j...
+  }//End for (const i...
+}//End function revealEmpty
+
 	/**
 	 * @description - called on when player clicks on a mine or has flagged all mines.
 	 * @param {boolean} win
 	 */
 	function gameOver(win){
-		if (win){
-			//win === true - flagged all mines!
-			updateGameState('Win!');
-			localStorage.setItem('Wallet', parseInt(localStorage.getItem('Wallet')) + mines * 20);
-			localStorage.setItem('Wins', parseInt(localStorage.getItem('Wins')) + 1);
-			localStorage.setItem('FlaggedMines', parseInt(localStorage.getItem('FlaggedMines')) + mines);
-			// TODO: Update stats in context reducer
-		}
-		else{
-			//win === false - clicked on a mine.
-			const coma = Math.ceil(Math.random() * minesLeft);
-			updateGameState('Coma for\n'  + coma + ' day(s).')
-			localStorage.setItem('Wallet', parseInt(localStorage.getItem('Wallet')) + countMinesFlagged() * 20);
-			localStorage.setItem('Wallet', parseInt(localStorage.getItem('Wallet')) - coma * 15);
-			localStorage.setItem('Losses', parseInt(localStorage.getItem('Losses')) + 1);
-			localStorage.setItem('FlaggedMines', parseInt(localStorage.getItem('FlaggedMines')) + countMinesFlagged());
-			// TODO: Update stats in context reducer
-		}
+		if (win) dispatch({type: 'game:win', monetaryReward: minesTotal * 100 })
+		else dispatch({type: 'game:lose', hospitalBill: (minesTotal - minesLeft) * -50 })
 	}
 
 	function generateGrid( coordY, coordX){
@@ -346,13 +233,13 @@ export default function GameField() {
 	}
 
 	return (
-		<table id='gameGrid'>
+		<table id="gameGrid" css={styles.gameGrid}>
 			<tbody>
 				{
 					Array(height).fill(undefined).map((r, i) => {
-						return <tr>
+						return <tr key={i}>
 							{
-								Array(width).fill(undefined).map((c, j) => <Tile id={`r${i}c${j}`} mapStyle={mapStyle} />)
+								Array(width).fill(undefined).map((c, j) => <Tile key={`r${i}c${j}`} id={`r${i}c${j}`} mapStyle={mapStyle} />)
 							}
 						</tr>
 					})

@@ -54,10 +54,20 @@ function mineFieldReducer(state, action) {
 				minesLeft: state.mines,
 				minesTotal: state.mines
 			})
-		case 'player:wins': // TODO
-		case 'player:losses': // TODO
-		case 'player:flaggedMines': // TODO
-		case 'player:money': // TODO
+		case 'game:win':
+			return Object.assign({}, state, {
+				status: 'Celebrating 🎉',
+				wins: state.wins + 1,
+				money: state.money + action.monetaryReward,
+				flaggedMines: state.flaggedMines + state.totalMines
+			})
+		case 'game:lose':
+			return Object.assign({}, state, {
+				status: 'Deep in Coma 😴',
+				losses: state.losses + 1,
+				money: state.money - action.hospitalBill,
+				flaggedMines: state.flaggedMines + state.totalMines - state.minesLeft
+			})
 		default:
 			return {
 				// GameField

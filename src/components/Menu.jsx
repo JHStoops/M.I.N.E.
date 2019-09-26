@@ -1,5 +1,22 @@
 import React, { useContext, useState } from 'react'
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core'
 import { GameContext } from '../App'
+
+const styles = {
+	menu: css`
+		float: left;
+		background-color: beige;
+		border: 1px solid black;
+		padding: 5px;
+		max-width: 130px;
+		height: 100%;
+
+		input[type=number]{
+			width: 40px;
+		}
+	`
+}
 
 export default function Menu() {
   const { dispatch, state } = useContext(GameContext)
@@ -25,9 +42,9 @@ export default function Menu() {
 	}
 
 	return (
-		<aside id="gameMenu">
+		<aside id="gameMenu" css={styles.menu}>
 			<h4>Player Stats</h4>
-			Wallet: $<span id="playerWallet">${money}</span> <br />
+			Wallet: $<span id="playerWallet">{money}</span> <br />
 			Wins: <span id="playerWins">{wins}</span> <br />
 			Losses: <span id="playerLosses">{losses}</span> <br />
 			Flagged mines: <span id="playerFlaggedMines">{flaggedMines}</span> <br />
@@ -59,18 +76,6 @@ export default function Menu() {
 			<button id="bNewGame" onClick={startNewGame}>Start New Game!</button> <br />
 			<button id="bSaveGame">Save Game</button> <br />
 			<button id="bLoadGame">Load Game</button> <br /><br />
-
-			Focus Music:
-			<img id="bMusicPlayer" height="63px" width="63px" src="../img/pause-play-button.png" onClick={() => { $('musicPlayer').paused ? $('musicPlayer').play() : $('musicPlayer').pause()}} alt="Play concentration music" />
-			<audio id="musicPlayer" src="motivational_music.mp3" type="audio/mpeg" />
 		</aside>
 	)
-}
-
-/**
- * @description - return the element with the specified ID
- */
-function $(theID){
-	if(typeof theID === 'string')
-		return document.getElementById(theID);
 }
