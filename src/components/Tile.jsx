@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import Unexplored from '../img/Unexplored.png' // TODO: Import every image individually -_-
+import IMG from '../img'
 import { GameContext } from '../App'
 
 const styles = {
@@ -10,106 +10,106 @@ const styles = {
     padding: 0px;
     width: 20px;
     height: 20px;
-    background-image:url(${Unexplored});
+    background-image:url(${IMG.Unexplored});
 
     .empty{
-      background-image:url();
+      background-image:url(${IMG.Empty});
     }
     .mine1{
-      background-image:url(/src/img/1mine.png);
+      background-image:url(${IMG.Mines1});
     }
     .mines2{
-      background-image:url(/src/img/2mines.png);
+      background-image:url(${IMG.Mines2});
     }
     .mines3{
-      background-image:url(/src/img/3mines.png);
+      background-image:url(${IMG.Mines3});
     }
     .mines4{
-      background-image:url(/src/img/4mines.png);
+      background-image:url(${IMG.Mines4});
     }
     .mines5{
-      background-image:url(/src/img/5mines.png);
+      background-image:url(${IMG.Mines5});
     }
     .mines6{
-      background-image:url(/src/img/6mines.png);
+      background-image:url(${IMG.Mines6});
     }
     .mines7{
-      background-image:url(/src/img/7mines.png);
+      background-image:url(${IMG.Mines7});
     }
     .mines8{
-      background-image:url(/src/img/8mines.png);
+      background-image:url(${IMG.Mines8});
     }
     .unexplored{
-      background-image:url('${Unexplored}');
+      background-image:url(${IMG.Unexplored});
     }
     .maybe{
-      background-image:url(/src/img/Maybe.png);
+      background-image:url(${IMG.Maybe});
     }
     .flagged{
-      background-image:url(/src/img/Flagged.png);
+      background-image:url(${IMG.Flagged});
     }
     .mine{
-      background-image:url(/src/img/Mine.png);
+      background-image:url(${IMG.Mine});
       position: relative;						/* Need this to display animation. */
       width: 20px;
       height: 20px;
     }
     .crater {
-      background-image:url(/src/img/Crater.png);
+      background-image:url(${IMG.Crater});
       position: relative;						/* Need this to display animation. */
       width: 20px;
       height: 20px;
     }
     .gr-empty{
-      background-image:url(/src/img/gr-empty.png);
+      background-image:url(${IMG.gr_Empty});
     }
     .gr-mine1{
-      background-image:url(/src/img/gr-1mine.png);
+      background-image:url(${IMG.gr_Mines1});
     }
     .gr-mines2{
-      background-image:url(/src/img/gr-2mines.png);
+      background-image:url(${IMG.gr_Mines2});
     }
     .gr-mines3{
-      background-image:url(/src/img/gr-3mines.png);
+      background-image:url(${IMG.gr_Mines3});
     }
     .gr-mines4{
-      background-image:url(/src/img/gr-4mines.png);
+      background-image:url(${IMG.gr_Mines4});
     }
     .gr-mines5{
-      background-image:url(/src/img/gr-5mines.png);
+      background-image:url(${IMG.gr_Mines5});
     }
     .gr-mines6{
-      background-image:url(/src/img/gr-6mines.png);
+      background-image:url(${IMG.gr_Mines6});
     }
     .gr-mines7{
-      background-image:url(/src/img/gr-7mines.png);
+      background-image:url(${IMG.gr_Mines7});
     }
     .gr-mines8{
-      background-image:url(/src/img/gr-8mines.png);
+      background-image:url(${IMG.gr_Mines8});
     }
     .gr-unexplored{
-      background-image:url(/src/img/gr-Unexplored.png);
+      background-image:url(${IMG.gr_Unexplored});
     }
     .gr-maybe{
-      background-image:url(/src/img/gr-Maybe.png);
+      background-image:url(${IMG.gr_Maybe});
     }
     .gr-flagged{
-      background-image:url(/src/img/gr-Flagged.png);
+      background-image:url(${IMG.gr_Flagged});
     }
     .gr-mine{
-      background-image:url(/src/img/gr-Mine.png);
+      background-image:url(${IMG.gr_Mine});
       position: relative;						/* Need this to display animation. */
       width: 20px;
       height: 20px;
     }
     .gr-crater {
-      background-image:url(/src/img/gr-Crater.png);
+      background-image:url(${IMG.gr_Crater});
       position: relative;						/* Need this to display animation. */
       width: 20px;
       height: 20px;
     }
     .explode{
-      background-image:url(/src/img/Explosion.png);
+      background-image:url(${IMG.Explosion});
       -webkit-animation: explosion 3s linear;
       -moz-animation: explosion 3s linear;
       -ms-transform: explosion 3s linear;
@@ -123,7 +123,7 @@ const styles = {
       height: 20px;
     }
     .smoke {
-      background-image: url(/src/img/Smoke.png);
+      background-image: url(${IMG.Smoke});
       -webkit-animation: smoking 1s infinite;
       -webkit-animation-delay: 2s;
       -moz-animation: smoking 1s infinite;
@@ -154,7 +154,7 @@ const styles = {
         -webkit-transform: scale(1) rotate(1turn);
         -moz-transform: scale(1) rotate(1turn);
         -ms-transform: scale(1) rotate(1turn);
-        -o-transform: scale(1) rotate(1turn);	
+        -o-transform: scale(1) rotate(1turn);
         transform: scale(1) rotate(1turn);
         opacity: 1;
       }
@@ -162,7 +162,7 @@ const styles = {
         -webkit-transform: scale(0) rotate(2turn);
         -moz-transform: scale(0) rotate(2turn);
         -ms-transform: scale(0) rotate(2turn);
-        -o-transform: scale(0) rotate(2turn);	
+        -o-transform: scale(0) rotate(2turn);
         transform: scale(0) rotate(2turn);
         opacity: 0;
       }
