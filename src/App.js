@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from 'react'
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core'
 import { Menu, MineField } from './components'
-import './styles.css'
 
 function mineFieldReducer(state, action) {
 	switch (action.type) {
@@ -11,7 +12,8 @@ function mineFieldReducer(state, action) {
 				width: 9,
 				mines: 10,
 				minesLeft: 10,
-				minesTotal: 10
+				minesTotal: 10,
+				firstClick: true
 			})
 			case 'newGame:Intermediate':
 				return Object.assign({}, state, {
@@ -20,7 +22,8 @@ function mineFieldReducer(state, action) {
 					width: 16,
 					mines: 40,
 					minesLeft: 40,
-					minesTotal: 40
+					minesTotal: 40,
+					firstClick: true
 				})
 			case 'newGame:Expert':
 				return Object.assign({}, state, {
@@ -29,7 +32,8 @@ function mineFieldReducer(state, action) {
 					width: 30,
 					mines: 99,
 					minesLeft: 99,
-					minesTotal: 99
+					minesTotal: 99,
+					firstClick: true
 				})
 		case 'newGame:Custom':
 			return Object.assign({}, state, {
@@ -38,7 +42,8 @@ function mineFieldReducer(state, action) {
 				width: action.width,
 				mines: action.mines,
 				minesLeft: action.mines,
-				minesTotal: action.mines
+				minesTotal: action.mines,
+				firstClick: true
 			})
 		case 'mapStyle:Classic':
 			return Object.assign({}, state, {mapStyle: ''})
@@ -54,6 +59,8 @@ function mineFieldReducer(state, action) {
 				minesLeft: state.mines,
 				minesTotal: state.mines
 			})
+		case 'game:firstClickClicked':
+			return Object.assign({}, state, {firstClick: false })
 		case 'game:win':
 			return Object.assign({}, state, {
 				status: 'Celebrating 🎉',
@@ -78,6 +85,7 @@ function mineFieldReducer(state, action) {
 				mines: 10,
 				minesLeft: 10,
 				minesTotal: 10,
+				firstClick: true,
 
 				// Player
 				money: 0,
@@ -89,6 +97,18 @@ function mineFieldReducer(state, action) {
 }
 
 export const GameContext = createContext();
+const styles = {
+	wrapper: css`
+		padding: 0px;
+		margin: 0px;
+
+		& h1 {
+			font: bold 28px Tahoma;
+			padding: 0;
+			margin: 0;
+		}
+	`
+}
 
 export default function App() {
 	const [state, dispatch] = useReducer(mineFieldReducer, {
@@ -99,6 +119,7 @@ export default function App() {
 		mines: 10,
 		minesLeft: 10,
 		minesTotal: 10,
+		firstClick: true,
 		money: 0,
 		wins: 0,
 		losses: 0,

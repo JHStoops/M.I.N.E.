@@ -15,6 +15,16 @@ const styles = {
 		input[type=number]{
 			width: 40px;
 		}
+
+		p, li, td{
+			font: 12px Tahoma;
+		}
+
+		h2 {
+			font: bold 14px Tahoma;
+			padding: 0;
+			margin: 0;
+		}
 	`
 }
 
@@ -38,20 +48,20 @@ export default function Menu() {
 
 	return (
 		<aside id="gameMenu" css={styles.menu}>
-			<h4>Player Stats</h4>
+			<h2>Player Stats</h2>
 			Wallet: $<span id="playerWallet">{money}</span> <br />
 			Wins: <span id="playerWins">{wins}</span> <br />
 			Losses: <span id="playerLosses">{losses}</span> <br />
 			Flagged mines: <span id="playerFlaggedMines">{flaggedMines}</span> <br />
 
 			<br />
-			<h4>Game Stats</h4>
+			<h2>Game Stats</h2>
 			Mines Total: <span id="minesTotal">{ minesTotal }</span> <br />
 			Mines Left: <span id="minesLeft">{ minesLeft }</span> <br />
 			Status: <span id="gameState">{ status }</span>
 
 			<br /><br />
-			<h4>Game Menu</h4>
+			<h2>Game Menu</h2>
 			Difficulty:<select id="difficultyChoice" value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
 				<option value="Beginner" id="Beginner">Beginner</option>
 				<option value="Intermediate" id="Intermediate">Intermediate</option>

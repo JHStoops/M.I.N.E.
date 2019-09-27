@@ -18,7 +18,6 @@ const styles = {
 export default function GameField() {
 	const { dispatch, state } = useContext(GameContext)
 	const { flaggedMines, height, losses, mapStyle, mines, minesLeft, minesTotal, money, width, wins } = state
-	const { firstClick, setFirstClick } = useState(true)
 	if ((!height && !width) || !mines) return false
 	if (!height) height = width
 	if (!width) width = height
@@ -38,12 +37,6 @@ export default function GameField() {
 			return true;
 		else
 			return false;
-	}
-
-	function getTileValue(row, col){
-		//Returns the class name for the selected tile.
-
-		return gridRows[row][col];
 	}
 
 	/**
@@ -84,7 +77,7 @@ function revealEmpty(row, col){
       if (tile.className === 'unexplored' || tile.className === 'gr-unexplored'
         || tile.className === 'maybe'  || tile.className === 'gr-maybe'
         || tile.className === 'flagged'  || tile.className === 'gr-flagged'){
-        tile.className = getTileValue(i, j);
+        // tile.className = getTileValue(i, j);
 
         //If the tile happens to be another empty tile, it's time to go recursive!
         if (tile.className === 'empty' || tile.className === 'gr-empty'){
@@ -104,16 +97,13 @@ function revealEmpty(row, col){
 		else dispatch({type: 'game:lose', hospitalBill: (minesTotal - minesLeft) * -50 })
 	}
 
-	function generateGrid( coordY, coordX){
-		//Generates a two dimensional Array - all tiles undefined.
-		//Then the mines are assigned to random tiles.
-		//Then the numbers are generated around the mines.
-		//Then the empty spaces are assigned to the remaining undefined elements.
-
-		//Is called by the function 'reveal', so first we set firstClick to false
-		setFirstClick(false)
-
-		//First: create two dimensional grid. gridRows[3][7] - references row 3, column 7
+	/**
+	 * @description - generates the map after player clicks for the first time to ensure first click isn't a mine.
+	 * @param {number} coordY - Y coordinate of firstClick
+	 * @param {number} coordX - X coordinate of firstClick
+	 */
+	function generateGrid(coordY, coordX){
+		// First: create two dimensional grid. gridRows[3][7] - references row 3, column 7
 		for (let i = 0; i < height; i++) {
 			gridRows[i] = new Array(width);
 			for (let j = 0; j < width; j++) {
@@ -121,12 +111,12 @@ function revealEmpty(row, col){
 			}
 		}
 
-		//Second: set 3x3 empty tile cluster.
+		// Second: set 3x3 empty tile cluster around player's first click.
 		for (let i = coordY -1; i <= coordY + 1; i++) {
 			if(i >= 0 && i <= height){
 				for (let j = coordX -1; j <= coordX + 1; j++) {
 					if(j >= 0 && j <= width){
-						gridRows[i][j] = mapStyle + 'empty';
+						gridRows[i][j] = 'Empty';
 					}
 				}
 			}
@@ -153,9 +143,8 @@ function revealEmpty(row, col){
 			col = Math.floor(Math.random() * gridRows[0].length);
 
 			//Only assign mine and reduce mines count if the tile is empty.
-			if(gridRows[row][col] !== 'mine' && gridRows[row][col] !== 'gr-mine'
-				&& gridRows[row][col] !== 'empty' && gridRows[row][col] !== 'gr-empty'){
-				gridRows[row][col] = mapStyle + 'mine';
+			if(gridRows[row][col] !== 'Mine' && gridRows[row][col] !== 'Empty') {
+				gridRows[row][col] = 'Mine';
 				minesRemaining--;
 			}
 		}//End of while
@@ -196,31 +185,31 @@ function revealEmpty(row, col){
 
 				switch(mineCount){
 					case 0:
-						gridRows[i][j] = mapStyle + 'empty';
+						gridRows[i][j] = 'Empty';
 						break;
 					case 1:
-						gridRows[i][j] = mapStyle + 'mine1';
+						gridRows[i][j] = 'Mine1';
 						break;
 					case 2:
-						gridRows[i][j] = mapStyle + 'mines2';
+						gridRows[i][j] = 'Mines2';
 						break;
 					case 3:
-						gridRows[i][j] = mapStyle + 'mines3';
+						gridRows[i][j] = 'Mines3';
 						break;
 					case 4:
-						gridRows[i][j] = mapStyle + 'mines4';
+						gridRows[i][j] = 'Mines4';
 						break;
 					case 5:
-						gridRows[i][j] = mapStyle + 'mines5';
+						gridRows[i][j] = 'Mines5';
 						break;
 					case 6:
-						gridRows[i][j] = mapStyle + 'mines6';
+						gridRows[i][j] = 'Mines6';
 						break;
 					case 7:
-						gridRows[i][j] = mapStyle + 'mines7';
+						gridRows[i][j] = 'Mines7';
 						break;
 					case 8:
-						gridRows[i][j] = mapStyle + 'mines8';
+						gridRows[i][j] = 'Mines8';
 						break;
 					default:
 						throw new Error()
@@ -239,7 +228,7 @@ function revealEmpty(row, col){
 					Array(height).fill(undefined).map((r, i) => {
 						return <tr key={i}>
 							{
-								Array(width).fill(undefined).map((c, j) => <Tile key={`r${i}c${j}`} id={`r${i}c${j}`} mapStyle={mapStyle} />)
+								Array(width).fill(undefined).map((c, j) => <Tile key={`r${i}c${j}`} mapStyle={mapStyle} generateGrid={() => generateGrid(i, j)} />)
 							}
 						</tr>
 					})
