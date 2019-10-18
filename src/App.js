@@ -128,7 +128,7 @@ export default function App() {
 
   return (
 		<GameContext.Provider value={{ state, dispatch }}>
-			<div id="wrapper">
+			<div css={styles.wrapper}>
 				<h1>M.I.N.E. - Mine Initiative of Nations Everywhere</h1>
 				<Menu />
 				<MineField />

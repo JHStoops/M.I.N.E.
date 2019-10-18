@@ -5,7 +5,7 @@ import IMG from '../img'
 import { GameContext } from '../App'
 
 export default function Tile(props) {
-  const { generateGrid, height, mapStyle, tileValue, width } = props
+  const { generateGrid, height, mapStyle, reveal, status, tileValue, width } = props
   const [visualState, setVisualState] = useState('unexplored')
   const { dispatch, state: { firstClick, minesTotal, minesLeft } } = useContext(GameContext)
   const styles = {
@@ -115,54 +115,6 @@ export default function Tile(props) {
           setVisualState('unexplored')
           dispatch({ type: 'game:minesLeft', minesLeft: minesLeft + 1 })
         break
-      default:
-        throw new Error()
-    }
-  }
-
-  /**
-   * @description - Reveals an unexplored tile's content
-   */
-  function reveal() {
-    //Reveals the tile's true contents by transferring the value from the Grid to the user's map.
-
-    if (firstClick) {
-      dispatch({type: 'game:firstClickClicked'})
-      generateGrid()
-    }
-
-    //Looks up the id of the selected tile, manipulates the id to get the row and col indices.
-    if (this.className.includes('unexplored') || this.className.includes('maybe')) {
-      const col = this.cellIndex
-      const row = this.parentNode.rowIndex
-
-      //Retrieve the classname from the Model.
-      // this.className = getTileValue(row, col)
-
-      if (this.className.includes('empty')) {
-        // revealEmpty(row, col)
-      }
-
-      //These two if statements start an animation for the mine to explode.
-      if (this.className.includes('mine')){
-        this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-        setTimeout(function() {
-          if(!firstClick && $('r'+row+'c'+col).className.includes('mine')) $('r'+row+'c'+col).className = `${mapStyle}crater`
-        }, 1000)
-
-        for (let i = 0; i < height; i++) {
-          for (let j = 0; j < width; j++) {
-            // if(getTileValue(i, j).includes('mine') && !$('r'+i+'c'+j).className.includes('flagged')) {
-            //   $('r'+i+'c'+j).className = `${mapStyle}crater`
-            //   $('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>'
-
-            //   boom(i, j)
-            // }
-          }//End of for(j...
-        }//End of for (i...
-
-        // gameOver(false)
-      }
     }
   }
 
@@ -172,18 +124,11 @@ export default function Tile(props) {
       return document.getElementById(theID);
   }
 
-  // I don't think this is necessary aymore (Just dispatch loss, the MineField should pass props down to trigger animation)
-  function boom(row, col){
-    //Detonates all unflagged mines when player reveals a mine.
-
-    if($('r'+row+'c'+col).className === 'mine')
-      setTimeout(function() {
-        // if(!firstClick && $('r'+row+'c'+col).className === 'mine') $('r'+row+'c'+col).className = 'crater';
-      }, 1000);
-    else
-      setTimeout(function() {
-        // if(!firstClick && $('r'+row+'c'+col).className === 'gr_mine') $('r'+row+'c'+col).className = 'gr_crater';
-      }, 1000);
+  /**
+   * @description - Detonates all unflagged mines when player reveals a mine.
+   */
+  function boom(){
+    if (tileValue === `${mapStyle}mine`) setTimeout(() => setVisualState(`${mapStyle}crater`), 1000);
   }
 
   const bgImage = IMG[`${mapStyle}${visualState.charAt(0).toUpperCase() + visualState.slice(1)}`]

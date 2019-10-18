@@ -17,8 +17,8 @@ const styles = {
  */
 export default function GameField() {
 	const { dispatch, state } = useContext(GameContext)
-	const { flaggedMines, height, losses, mapStyle, mines, minesLeft, minesTotal, money, width, wins } = state
-	if ((!height && !width) || !mines) return false
+	const { firstClick, flaggedMines, height, losses, mapStyle, mines, minesLeft, minesTotal, money, status, width, wins } = state
+	if ((!height && !width) || !mines || status === 'Idle') return false
 	if (!height) height = width
 	if (!width) width = height
 
@@ -58,35 +58,35 @@ export default function GameField() {
 		return counter;
 	}
 
-// TODO: Maybe MineField should pass a callback to recursively open empty tile areas?
+/**
+ * @description - When player clicks on an empty tile, this function will reveal the rest of the group of empty tiles and their adjacent tiles (always numbers - never mines)
+ * @param {*} row
+ * @param {*} col
+ */
 function revealEmpty(row, col){
-  //When player clicks on an empty tile, this function will reveal the rest
-  //of the group of empty tiles and their adjacent tiles (always numbers - never mines)
   let tile;
 
   for (let i = row - 1; i <= row + 1; i++){
     if (i < 0 || i >= height) continue;
 
     for (let j = col - 1; j <= col + 1; j++){
-      //Don't check the tile itself, only its adjacet tiles.
+      // Don't check the tile itself, only its adjacet tiles.
       if (i === row && j === col) continue;
       if (j < 0 || j >= width) continue;
       tile = $('r'+i+'c'+j);
 
-      //Only deal with tile if it's still unexplored.
-      if (tile.className === 'unexplored' || tile.className === 'gr-unexplored'
-        || tile.className === 'maybe'  || tile.className === 'gr-maybe'
-        || tile.className === 'flagged'  || tile.className === 'gr-flagged'){
+      // Only deal with tile if it's still unexplored.
+      if ([`${mapStyle}unexplored`, `${mapStyle}maybe`, `${mapStyle}flagged`].includes(gridRows[row][col])) {
         // tile.className = getTileValue(i, j);
 
-        //If the tile happens to be another empty tile, it's time to go recursive!
-        if (tile.className === 'empty' || tile.className === 'gr-empty'){
+        // If the tile happens to be another empty tile, it's time to go recursive!
+        if (tile.className === 'empty' || tile.className === 'gr-empty') {
           revealEmpty(i, j);
         }
-      }//End if(tile.className...
-    }//End for (const j...
-  }//End for (const i...
-}//End function revealEmpty
+      }// End if(tile.className...
+    }// End for (const j...
+  }// End for (const i...
+}// End function revealEmpty
 
 	/**
 	 * @description - called on when player clicks on a mine or has flagged all mines.
@@ -107,7 +107,7 @@ function revealEmpty(row, col){
 		for (let i = 0; i < height; i++) {
 			gridRows[i] = new Array(width);
 			for (let j = 0; j < width; j++) {
-				gridRows[i][j] = undefined;
+				gridRows[i][j] = { value: undefined, explored: false};
 			}
 		}
 
@@ -116,7 +116,8 @@ function revealEmpty(row, col){
 			if(i >= 0 && i <= height){
 				for (let j = coordX -1; j <= coordX + 1; j++) {
 					if(j >= 0 && j <= width){
-						gridRows[i][j] = 'Empty';
+						gridRows[i][j].value = 'Empty'
+						gridRows[i][j].explored = true
 					}
 				}
 			}
@@ -136,15 +137,14 @@ function revealEmpty(row, col){
 
 		//Declare constiables.
 		let minesRemaining = mines;	//Used as a counter.
-		let row, col;
 
 		while (minesRemaining > 0){
-			row = Math.floor(Math.random() * gridRows.length);
-			col = Math.floor(Math.random() * gridRows[0].length);
+			let row = Math.floor(Math.random() * gridRows.length);
+			let col = Math.floor(Math.random() * gridRows[0].length);
 
 			//Only assign mine and reduce mines count if the tile is empty.
-			if(gridRows[row][col] !== 'Mine' && gridRows[row][col] !== 'Empty') {
-				gridRows[row][col] = 'Mine';
+			if(gridRows[row][col].value !== 'Mine' && gridRows[row][col].value !== 'Empty') {
+				gridRows[row][col].value = 'Mine';
 				minesRemaining--;
 			}
 		}//End of while
@@ -160,24 +160,18 @@ function revealEmpty(row, col){
 		for (let i = 0; i < height; i++){
 			for (let j = 0; j < width; j++){
 				//If it's a mine, move to the next tile.
-				if (gridRows[i][j] === 'mine' || gridRows[i][j] === 'gr-mine'){
-					continue;
-				}
+				if (gridRows[i][j].value === `${mapStyle}mine`) continue
 
 				//If it's not a mine, check adjacent tiles for mines to determine the tile class.
 				for (let k = i - 1; k <= i + 1; k++){
 					//If k is outside the range of the gridRows arrays, we don't want to cause errors.
-					if (k < 0 || k >= height){
-						continue;
-					}
+					if (k < 0 || k >= height) continue
 					for(let l = j - 1; l <= j + 1; l++){
 						//If l is outside the range of the gridRows arrays, we don't want to cause errors.
-						if (l < 0 || l >= width){
-							continue;
-						}
+						if (l < 0 || l >= width) continue
 
 						//Start counting adjacent mines.
-						if (gridRows[k][l] === 'mine' || gridRows[k][l] === 'gr-mine'){
+						if (gridRows[k][l].value === `${mapStyle}mine`){
 							mineCount++;
 						}
 					}
@@ -185,31 +179,31 @@ function revealEmpty(row, col){
 
 				switch(mineCount){
 					case 0:
-						gridRows[i][j] = 'Empty';
+						gridRows[i][j].value = 'Empty';
 						break;
 					case 1:
-						gridRows[i][j] = 'Mine1';
+						gridRows[i][j].value = 'Mine1';
 						break;
 					case 2:
-						gridRows[i][j] = 'Mines2';
+						gridRows[i][j].value = 'Mines2';
 						break;
 					case 3:
-						gridRows[i][j] = 'Mines3';
+						gridRows[i][j].value = 'Mines3';
 						break;
 					case 4:
-						gridRows[i][j] = 'Mines4';
+						gridRows[i][j].value = 'Mines4';
 						break;
 					case 5:
-						gridRows[i][j] = 'Mines5';
+						gridRows[i][j].value = 'Mines5';
 						break;
 					case 6:
-						gridRows[i][j] = 'Mines6';
+						gridRows[i][j].value = 'Mines6';
 						break;
 					case 7:
-						gridRows[i][j] = 'Mines7';
+						gridRows[i][j].value = 'Mines7';
 						break;
 					case 8:
-						gridRows[i][j] = 'Mines8';
+						gridRows[i][j].value = 'Mines8';
 						break;
 					default:
 						throw new Error()
@@ -221,6 +215,41 @@ function revealEmpty(row, col){
 		}//End of traversing the grid.
 	}
 
+	/**
+   * @description - Reveals an unexplored tile's content
+   */
+	function handleReveal(i, j) {
+    if (firstClick) {
+      dispatch({type: 'game:firstClickClicked'})
+			generateGrid()
+		}
+
+		if (gridRows[i][j].value === 'empty') {
+			// revealEmpty(row, col)
+		}
+
+		//These two if statements start an animation for the mine to explode.
+		if (gridRows[i][j].value === 'mine') {
+			this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
+			setTimeout(function() {
+				if(!firstClick && $('r'+row+'c'+col).className.includes('mine')) $('r'+row+'c'+col).className = `${mapStyle}crater`
+			}, 1000)
+
+			for (let i = 0; i < height; i++) {
+				for (let j = 0; j < width; j++) {
+					// if(getTileValue(i, j).includes('mine') && !$('r'+i+'c'+j).className.includes('flagged')) {
+					//   $('r'+i+'c'+j).className = `${mapStyle}crater`
+					//   $('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>'
+
+					//   boom(i, j)
+					// }
+				}//End of for(j...
+			}//End of for (i...
+
+			// gameOver(false)
+		}
+	}
+
 	return (
 		<table id="gameGrid" css={styles.gameGrid}>
 			<tbody>
@@ -228,7 +257,7 @@ function revealEmpty(row, col){
 					Array(height).fill(undefined).map((r, i) => {
 						return <tr key={i}>
 							{
-								Array(width).fill(undefined).map((c, j) => <Tile key={`r${i}c${j}`} mapStyle={mapStyle} generateGrid={() => generateGrid(i, j)} />)
+								Array(width).fill(undefined).map((c, j) => <Tile key={`r${i}c${j}`} mapStyle={mapStyle} reveal={() => handleReveal(i, j)} />)
 							}
 						</tr>
 					})
