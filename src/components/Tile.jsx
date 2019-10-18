@@ -8,6 +8,7 @@ export default function Tile(props) {
   const { generateGrid, height, mapStyle, reveal, status, tileValue, width } = props
   const [visualState, setVisualState] = useState('unexplored')
   const { dispatch, state: { firstClick, minesTotal, minesLeft } } = useContext(GameContext)
+  const bgImage = IMG[`${mapStyle}${visualState.charAt(0).toUpperCase() + visualState.slice(1)}`]
   const styles = {
     tile: css`
       margin: 0px;
@@ -118,20 +119,7 @@ export default function Tile(props) {
     }
   }
 
-  // I don't think this is necessary aymore
-  function $(theID){
-    if(typeof theID === 'string')
-      return document.getElementById(theID);
-  }
-
-  /**
-   * @description - Detonates all unflagged mines when player reveals a mine.
-   */
-  function boom(){
-    if (tileValue === `${mapStyle}mine`) setTimeout(() => setVisualState(`${mapStyle}crater`), 1000);
-  }
-
-  const bgImage = IMG[`${mapStyle}${visualState.charAt(0).toUpperCase() + visualState.slice(1)}`]
+  if (tileValue === `${mapStyle}mine`) setTimeout(() => setVisualState(`${mapStyle}crater`), 1000);
   return <td
     css={styles.tile}
     className={`${mapStyle}${visualState}`}

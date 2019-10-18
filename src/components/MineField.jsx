@@ -231,22 +231,21 @@ function revealEmpty(row, col){
 		//These two if statements start an animation for the mine to explode.
 		if (gridRows[i][j].value === 'mine') {
 			this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
-			setTimeout(function() {
-				if(!firstClick && $('r'+row+'c'+col).className.includes('mine')) $('r'+row+'c'+col).className = `${mapStyle}crater`
+			setTimeout(() => {
+				if(gridRows[i][j].value === `${mapStyle}mine`) gridRows[i][j].value = `${mapStyle}crater`
 			}, 1000)
 
 			for (let i = 0; i < height; i++) {
 				for (let j = 0; j < width; j++) {
-					// if(getTileValue(i, j).includes('mine') && !$('r'+i+'c'+j).className.includes('flagged')) {
-					//   $('r'+i+'c'+j).className = `${mapStyle}crater`
-					//   $('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>'
-
-					//   boom(i, j)
-					// }
+					if(gridRows[i][j].includes('mine')) {
+						gridRows[i][j].value = `${mapStyle}crater`
+						// TODO: render Tiles with explosion animation
+						// $('r'+i+'c'+j).innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>'
+					}
 				}//End of for(j...
 			}//End of for (i...
 
-			// gameOver(false)
+			gameOver(false)
 		}
 	}
 
