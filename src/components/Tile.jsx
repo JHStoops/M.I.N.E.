@@ -5,10 +5,11 @@ import IMG from '../img'
 import { GameContext } from '../App'
 
 export default function Tile(props) {
-  const { generateGrid, height, mapStyle, reveal, status, tileValue, width } = props
-  const [visualState, setVisualState] = useState('unexplored')
-  const { dispatch, state: { firstClick, minesTotal, minesLeft } } = useContext(GameContext)
-  const bgImage = IMG[`${mapStyle}${visualState.charAt(0).toUpperCase() + visualState.slice(1)}`]
+  const { mapStyle, reveal, explored, value } = props
+  const [visualState, setVisualState] = useState('Unexplored')
+  const { dispatch, state: { minesTotal, minesLeft, status } } = useContext(GameContext)
+  const bgKey = value && explored ? value : `${mapStyle}${visualState}`
+  const bgImage = IMG[bgKey]
   const styles = {
     tile: css`
       margin: 0px;
@@ -100,29 +101,32 @@ export default function Tile(props) {
     event.preventDefault()
 
     switch(visualState){
-      case 'unexplored':
-          setVisualState('maybe')
+      case 'Revealed':
         break
-      case 'maybe':
+      case 'Unexplored':
+          setVisualState('Maybe')
+        break
+      case 'Maybe':
         if(minesLeft > 0) {
-          setVisualState('flagged')
+          setVisualState('Flagged')
           dispatch({ type: 'game:minesLeft', minesLeft: minesLeft - 1 })
         }
         else{
-          setVisualState('unexplored')
+          setVisualState('Unexplored')
         }
         break
-      case 'flagged':
-          setVisualState('unexplored')
+      case 'Flagged':
+          setVisualState('Unexplored')
           dispatch({ type: 'game:minesLeft', minesLeft: minesLeft + 1 })
         break
     }
   }
 
-  if (tileValue === `${mapStyle}mine`) setTimeout(() => setVisualState(`${mapStyle}crater`), 1000);
+	// this.innerHTML = '<div class=\'explode\'></div><div class=\'smoke\'></div>';
+  if (status === 'Deep in Coma 😴' && value && value.value === `${mapStyle}Mine`) setTimeout(() => setVisualState(`${mapStyle}Crater`), 1000);
   return <td
     css={styles.tile}
-    className={`${mapStyle}${visualState}`}
+    className={value && explored ? value : `${mapStyle}${visualState}`}
     onClick={reveal}
     onContextMenu={markTile}
     style={{ backgroundImage: 'url(' + bgImage + ')' }}
