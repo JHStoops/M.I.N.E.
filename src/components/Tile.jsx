@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import images from '../img'
 
 /**
  * @describe -
@@ -38,11 +37,11 @@ export default function Tile({ forceShow, onEmptyTileClick, type }) {
     else setTileState('unexplored')
   }, [tileState])
 
-  if (isExplored) return (<img className="mine-field-tile" onContextMenu={toggleRightClick} src={images[type]} alt={type} />)
+  if (isExplored) return (<img className="mine-field-tile" onContextMenu={toggleRightClick} src={`/images/${type}.png`} alt={type} />)
   return (
     <img
       className="mine-field-tile"
-      src={images[tileState]}
+      src={`/images/${tileState}.png`}
       onContextMenu={toggleRightClick}
       onClick={handleClick}
       onKeyUp={handleKeyUp}
