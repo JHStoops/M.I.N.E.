@@ -1,6 +1,11 @@
 import React from 'react'
-import MineField from './components/MineField'
+import MineControls from './components/MineControls'
 
 export default function App() {
-  return (<MineField />)
+  return (
+    <>
+      <h1>M.I.N.E.</h1>
+      <MineControls />
+    </>
+  )
 }
