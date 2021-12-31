@@ -14,20 +14,20 @@ import questionable from './Maybe.png'
 import mine from './Mine.png'
 import smoke from './Smoke.png'
 import unexplored from './Unexplored.png'
-import gr_mines1 from './gr-Mines1.png'
-import gr_mines2 from './gr-Mines2.png'
-import gr_mines3 from './gr-Mines3.png'
-import gr_mines4 from './gr-Mines4.png'
-import gr_mines5 from './gr-Mines5.png'
-import gr_mines6 from './gr-Mines6.png'
-import gr_mines7 from './gr-Mines7.png'
-import gr_mines8 from './gr-Mines8.png'
-import gr_crater from './gr-Crater.png'
-import gr_empty from './gr-Empty.png'
-import gr_flagged from './gr-Flagged.png'
-import gr_questionable from './gr-Maybe.png'
-import gr_mine from './gr-Mine.png'
-import gr_unexplored from './gr-Unexplored.png'
+import grMines1 from './gr-Mines1.png'
+import grMines2 from './gr-Mines2.png'
+import grMines3 from './gr-Mines3.png'
+import grMines4 from './gr-Mines4.png'
+import grMines5 from './gr-Mines5.png'
+import grMines6 from './gr-Mines6.png'
+import grMines7 from './gr-Mines7.png'
+import grMines8 from './gr-Mines8.png'
+import grCrater from './gr-Crater.png'
+import grEmpty from './gr-Empty.png'
+import grFlagged from './gr-Flagged.png'
+import grQuestionable from './gr-Maybe.png'
+import grMine from './gr-Mine.png'
+import grUnexplored from './gr-Unexplored.png'
 
 const images = {
   mines1,
@@ -46,20 +46,20 @@ const images = {
   mine,
   smoke,
   unexplored,
-  gr_mines1,
-  gr_mines2,
-  gr_mines3,
-  gr_mines4,
-  gr_mines5,
-  gr_mines6,
-  gr_mines7,
-  gr_mines8,
-  gr_crater,
-  gr_empty,
-  gr_flagged,
-  gr_questionable,
-  gr_mine,
-  gr_unexplored
+  grMines1,
+  grMines2,
+  grMines3,
+  grMines4,
+  grMines5,
+  grMines6,
+  grMines7,
+  grMines8,
+  grCrater,
+  grEmpty,
+  grFlagged,
+  grQuestionable,
+  grMine,
+  grUnexplored,
 }
 
 export default images
