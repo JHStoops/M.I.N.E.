@@ -10,11 +10,18 @@ function getRandomNumber(min, max) {
  * @param {Function} action - The action to be performed per adjacent tile.
  */
 export function doToAdjacentTiles(mineField, x, y, action) {
-  for (let i = Math.max(0, x); i <= Math.min(mineField[0].length - 1, x + 1); i++) {
-    for (let j = Math.max(0, y); j <= Math.min(mineField.length - 1, y + 1); j++) {
-      action(mineField[y][x], x, y)
+  for (let i = Math.max(0, x - 1); i <= Math.min(mineField[0].length - 1, x + 1); i++) {
+    for (let j = Math.max(0, y - 1); j <= Math.min(mineField.length - 1, y + 1); j++) {
+      if (!(i === x && j === y)) action(mineField[j][i], i, j)
     }
   }
+}
+
+export function generatePlaceholderMineField(width, height) {
+  return new Array(height)
+    .fill()
+    .map(() => new Array(width).fill()
+      .map(() => ({ forceShow: false, type: 'empty' })))
 }
 
 /**
@@ -27,9 +34,8 @@ export function generateRandomField(width, height, mines, firstClickCoords) {
   if (mines >= width * height) throw Error('generateRandomField(...): Mines exceeded number of tiles.')
   const mineField = new Array(height)
     .fill()
-    .map((row) => new Array(width).fill()
-      .map((tile) => ({ forceShow: false, type: 'empty'}))
-    )
+    .map(() => new Array(width).fill()
+      .map(() => ({ forceShow: false, type: 'empty' })))
 
   // randomly place mines
   for (let i = 0; i < mines; i++) {
@@ -50,7 +56,7 @@ export function generateRandomField(width, height, mines, firstClickCoords) {
   // Put in numbers
   mineField.forEach((row, rowIndex) => {
     row.forEach((tile, tileIndex) => {
-      if (tile === 'mine') return
+      if (tile.type === 'mine') return
       let mineCount = 0
 
       doToAdjacentTiles(mineField, tileIndex, rowIndex, (tileObj) => {
@@ -61,6 +67,5 @@ export function generateRandomField(width, height, mines, firstClickCoords) {
     })
   })
 
-  console.log(mineField)
   return mineField
 }

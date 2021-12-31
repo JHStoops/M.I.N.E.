@@ -20,14 +20,14 @@ export default function Tile({ forceShow, onEmptyTileClick, type }) {
       else if (type === 'empty') onEmptyTileClick()
       setTileState('explored')
     },
-    [tileState, type],
+    [onEmptyTileClick, tileState, type],
   )
 
   const handleKeyUp = useCallback(
     (event) => {
       if (event.code === 'Enter') handleClick()
     },
-    [],
+    [handleClick],
   )
 
   const toggleRightClick = useCallback((event) => {

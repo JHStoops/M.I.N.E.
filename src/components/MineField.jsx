@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { doToAdjacentTiles, generateRandomField } from '../lib/utils'
+import { doToAdjacentTiles, generatePlaceholderMineField, generateRandomField } from '../lib/utils'
 import Tile from './Tile'
 import './mineField.css'
 
@@ -18,8 +18,6 @@ function exposeEmptyTiles(mineField, x, y) {
     // Do nothing if it has already been explored
     if (tileObj.forceShow) return
 
-    debugger
-
     // Set `forceShow` flag
     tileObj.forceShow = true
 
@@ -34,25 +32,36 @@ function exposeEmptyTiles(mineField, x, y) {
  * @describe -
 */
 export default function MineField() {
-  const [mineField, setMineField] = useState(generateRandomField(10, 10, 10, { x: 0, y: 0 }))
+  const [firstClickPerformed, setFirstClickPerformed] = useState(false)
+  const [mineField, setMineField] = useState(() => generatePlaceholderMineField(10, 10))
 
   const handleEmptyTileClick = useCallback(
     (x, y) => {
-      console.log(mineField)
-      const newMineField = exposeEmptyTiles(JSON.parse(JSON.stringify((mineField)), x, y))
-      console.log(newMineField)
+      let newMineField
+      if (firstClickPerformed) {
+        newMineField = JSON.parse(JSON.stringify(mineField))
+      } else {
+        newMineField = generateRandomField(10, 10, 10, { x, y })
+        setFirstClickPerformed(true)
+      }
+      newMineField = exposeEmptyTiles(newMineField, x, y)
       setMineField(newMineField)
     },
-    [mineField],
+    [firstClickPerformed, mineField],
   )
 
   return mineField.map((row, rowIndex) => (
     <div className="mine-field-row">
       {
-        row.map((tile, tileIndex) => {
-          return (
-          <Tile key={`${rowIndex}-${tileIndex}`} forceShow={tile.forceShow} onEmptyTileClick={() => handleEmptyTileClick(mineField, tileIndex, rowIndex)} type={tile.type} />
-        )})
+        row.map((tile, tileIndex) => (
+          <Tile
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${rowIndex}-${tileIndex}`}
+            forceShow={tile.forceShow}
+            onEmptyTileClick={() => handleEmptyTileClick(tileIndex, rowIndex)}
+            type={tile.type}
+          />
+        ))
       }
     </div>
   ))

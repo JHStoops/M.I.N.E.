@@ -20,7 +20,9 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "jest",
+    "react",
+    "react-hooks"
   ],
   "rules": {
     "max-len": ["warn", {
@@ -31,6 +33,7 @@
     "no-plusplus": "off",
     "react/function-component-definition": "off",
     "react/jsx-filename-extension": "off",
+    "react-hooks/exhaustive-deps": "warn",
     "semi": ["error", "never"]
   }
 }
